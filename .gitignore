@@ -201,6 +201,11 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# MedBridge local runtime data
+data/medbridge.db
+data/uploads/
+data/chromadb/
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

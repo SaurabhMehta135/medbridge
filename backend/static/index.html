@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedBridge — Your Complete Health Story</title>
+    <meta name="description" content="MedBridge: AI-powered health record platform connecting patients and doctors with intelligent analysis." />
+    
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-color: #FAFAFB;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            
+            --brand-blue: #0066CC;
+            --brand-teal: #0891B2;
+            
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAFAFB; /* Fallback */
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 1. AURORA BACKGROUND (Aceternity UI Mimic) */
+        .aurora-bg {
+            position: fixed; inset: -40%; z-index: -1;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(10, 132, 255, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(14, 116, 144, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 0%, rgba(94, 92, 230, 0.1) 0%, transparent 60%);
+            filter: blur(80px);
+            animation: auroraSpin 35s linear infinite, auroraBreathe 15s ease-in-out infinite alternate;
+            transform-origin: center center;
+            pointer-events: none;
+        }
+        @keyframes auroraSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes auroraBreathe { 0% { opacity: 0.8; } 100% { opacity: 1; transform: scale(1.1); } }
+        
+        /* Subtle mesh overlay over the aurora for depth */
+        .mesh-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.6; pointer-events: none;
+            mask-image: linear-gradient(to bottom, white 10%, transparent 90%);
+            -webkit-mask-image: linear-gradient(to bottom, white 10%, transparent 90%);
+        }
+
+        .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; position: relative; }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.3s;
+        }
+        nav .inner { 
+            max-width: 1140px; margin: 0 auto; padding: 0 24px; 
+            display: flex; align-items: center; justify-content: space-between; height: 72px; 
+        }
+        .brand { 
+            display: flex; align-items: center; gap: 12px; 
+            text-decoration: none; color: var(--text-main); 
+        }
+        .brand-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, #0284C7, #06B6D4);
+            display: grid; place-items: center; 
+            font-size: 18px; font-weight: 800; color: white;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+        .brand span { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+
+        /* HERO SECTION */
+        .hero { text-align: center; padding: 200px 0 80px; }
+        
+        .hero-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 20px; border-radius: 999px;
+            background: rgba(255,255,255,0.8); 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.06);
+            font-size: 13px; font-weight: 700; color: var(--text-main);
+            margin-bottom: 32px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            animation: fadeUp 0.8s ease backwards;
+        }
+        
+        .pill-status { 
+            width: 8px; height: 8px; border-radius: 50%; 
+            background: #34C759; box-shadow: 0 0 10px #34C759; 
+            animation: pulse-green 2s infinite; 
+        }
+        @keyframes pulse-green { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5rem); 
+            font-weight: 900; line-height: 1.05; letter-spacing: -2px;
+            color: var(--text-main); 
+            animation: fadeUp 0.8s 0.1s ease backwards;
+        }
+        
+        .grad-text { 
+            background: linear-gradient(135deg, #0284C7 0%, #06B6D4 50%, #4F46E5 100%); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+        }
+        
+        /* 2. TEXT GENERATE EFFECT (Cursor via CSS + JS) */
+        .hero p { 
+            max-width: 620px; margin: 28px auto 0; 
+            font-size: 20px; line-height: 1.6; font-weight: 400;
+            color: var(--text-muted); 
+            min-height: 96px; /* reserve space so Layout doesn't shift */
+        }
+        .cursor {
+            display: inline-block; width: 3px; height: 1.1em;
+            background-color: var(--brand-blue);
+            vertical-align: middle; margin-left: 2px;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 3. MOVING BORDER BUTTONS (Aceternity UI Mimic) */
+        .cta-container {
+            display: flex; justify-content: center; align-items: center; gap: 24px;
+            margin-top: 56px;
+            animation: fadeUp 0.8s 0.2s ease backwards;
+        }
+        
+        .mov-border-wrapper {
+            position: relative; overflow: hidden;
+            display: inline-flex; border-radius: 999px;
+            padding: 3px; /* Width of the animated border */
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+        }
+        .mov-border-wrapper::before {
+            content: ''; position: absolute;
+            top: -100%; left: -100%; right: -100%; bottom: -100%;
+            background: conic-gradient(from 0deg, transparent 60%, rgba(2, 132, 199, 1) 85%, transparent 100%);
+            animation: borderSpin 4s linear infinite;
+            z-index: 0;
+        }
+        .patient-wrapper { box-shadow: 0 12px 24px rgba(2, 132, 199, 0.2); }
+        .patient-wrapper:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 36px rgba(2, 132, 199, 0.3); }
+
+        .doctor-wrapper { padding: 2px; box-shadow: 0 12px 24px rgba(0, 0, 0, 0.04); }
+        .doctor-wrapper::before {
+            background: conic-gradient(from 180deg, transparent 60%, rgba(8, 145, 178, 0.6) 85%, transparent 100%);
+        }
+        .doctor-wrapper:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 36px rgba(8, 145, 178, 0.15); }
+
+        @keyframes borderSpin { 100% { transform: rotate(360deg); } }
+
+        .btn-inner {
+            position: relative; z-index: 1;
+            border-radius: 999px;
+            padding: 18px 40px; font-size: 16px; font-weight: 600; text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; height: 100%;
+        }
+        .btn-patient { background: #0284C7; color: white; }
+        .btn-doctor { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); color: #0891B2; }
+        .arrow { transition: transform 0.3s; }
+        .mov-border-wrapper:hover .arrow { transform: translateX(4px); }
+
+        .cta-caption {
+            display: block; width: 100%; text-align: center;
+            margin-top: 24px; font-size: 13px; font-weight: 500;
+            color: var(--text-muted);
+            animation: fadeUp 0.8s 0.3s ease backwards;
+        }
+
+        /* 4. TRACING BEAM (Patient Journey) */
+        .tracing-beam-section {
+            padding: 80px 0; margin-top: 40px;
+            position: relative;
+        }
+        .beam-container {
+            display: flex; position: relative; max-width: 900px; margin: 0 auto;
+        }
+        .beam-rail {
+            width: 4px; background: rgba(0,0,0,0.05); border-radius: 4px;
+            position: absolute; left: 0; top: 0; bottom: 0; overflow: hidden;
+            margin-left: 20px;
+        }
+        .beam-glow {
+            width: 100%; height: 0%; /* JS will update this */
+            background: linear-gradient(to bottom, transparent, #0284C7, #06B6D4);
+            box-shadow: 0 0 20px #06B6D4;
+            transition: height 0.1s;
+        }
+        
+        /* The glowing dot head */
+        .beam-dot {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: white; border: 3px solid #06B6D4;
+            position: absolute; left: 14px; top: 0; 
+            box-shadow: 0 0 16px #06B6D4;
+            transition: top 0.1s;
+            z-index: 2;
+        }
+
+        .journey-steps { padding-left: 80px; width: 100%; }
+        .step { margin-bottom: 60px; opacity: 0.4; transition: opacity 0.4s; }
+        .step.active { opacity: 1; }
+        .step h3 { font-size: 24px; font-weight: 800; color: #0F172A; margin-bottom: 12px; }
+        .step p { font-size: 16px; color: #64748B; line-height: 1.6; max-width: 500px; }
+
+        /* 5. BENTO GRID (MagicUI / Aceternity Mimic) */
+        .bento-section { padding: 100px 0; }
+        .section-tag { text-align: center; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #0284C7; text-transform: uppercase; margin-bottom: 12px; }
+        .section-title { text-align: center; font-size: 36px; font-weight: 900; color: #0F172A; margin-bottom: 60px; letter-spacing: -1px; }
+
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); 
+            gap: 24px;
+        }
+        
+        .bento-card {
+            background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border); border-radius: 28px;
+            padding: 36px; box-shadow: var(--glass-shadow);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            transition: transform 0.3s;
+        }
+        .bento-card:hover { transform: translateY(-4px); }
+        
+        /* Magic Card Hover Glow effect */
+        .bento-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient( 600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(2, 132, 199, 0.1), transparent 40% );
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 0;
+        }
+        .bento-card:hover::before { opacity: 1; }
+
+        .bento-card > * { position: relative; z-index: 1; }
+        
+        .card-icon { font-size: 32px; margin-bottom: 24px; display: inline-block; background: white; padding: 16px; border-radius: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .bento-card h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+        .bento-card p { font-size: 15px; color: #475569; line-height: 1.6; }
+        .card-content { margin-top: 0; }
+
+        /* Asymmetrical spans */
+        .bento-large { grid-column: span 2; grid-row: span 2; } /* 2x2 */
+        .bento-wide  { grid-column: span 2; grid-row: span 1; } /* 2x1 */
+        .bento-small { grid-column: span 1; grid-row: span 1; } /* 1x1 */
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .bento-large { grid-column: span 2; }
+            .hero h1 { font-size: 3.5rem; }
+            .cta-container { flex-direction: column; width: 100%; }
+            .mov-border-wrapper, .btn-inner { width: 100%; }
+        }
+        @media (max-width: 600px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-large, .bento-wide, .bento-small { grid-column: span 1; grid-row: auto; }
+            .journey-steps { padding-left: 50px; }
+            .beam-rail { margin-left: 10px; }
+            .beam-dot { left: 4px; }
+        }
+
+        footer { text-align: center; padding: 40px 0; border-top: 1px solid rgba(0,0,0,0.05); font-size: 13px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Aurora Background Mesh layer -->
+    <div class="aurora-bg"></div>
+    <div class="mesh-overlay"></div>
+
+    <nav>
+        <div class="inner">
+            <a href="/" class="brand"><div class="brand-icon">M</div><span>MedBridge</span></a>
+            <a href="/docs" target="_blank" class="nav-link" style="text-decoration: none; font-weight: 600; color:#64748B;">API Reference</a>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <section class="hero">
+            <div class="hero-pill">
+                <span class="pill-status"></span> Active Architecture
+            </div>
+            
+            <h1>Your Health Story,<br><span class="grad-text">Intelligently Connected.</span></h1>
+            
+            <!-- 2. Text Generate Container -->
+            <p><span id="hero-subtitle"></span><span class="cursor"></span></p>
+            
+            <div class="cta-container">
+                <!-- 3. Moving Border Button Mimic -->
+                <a href="#" onclick="window.location.href = window.location.protocol + '//' + window.location.hostname + ':8501'; return false;" style="text-decoration: none;">
+                    <div class="mov-border-wrapper patient-wrapper">
+                        <div class="btn-inner btn-patient">
+                            🧑‍💼 Launch Patient Portal
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="#" onclick="window.location.href = window.location.protocol + '//' + window.location.hostname + ':8502'; return false;" style="text-decoration: none;">
+                    <div class="mov-border-wrapper doctor-wrapper">
+                        <div class="btn-inner btn-doctor">
+                            🩺 Launch Doctor Portal <span class="arrow">→</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <span class="cta-caption">Secured via cryptographic models. HIPAA Compliant Environment.</span>
+        </section>
+    </div>
+
+    <!-- 4. Tracing Beam Section -->
+    <section class="tracing-beam-section wrap">
+        <!-- Optional Title for Journey -->
+        <div class="section-tag">How it works</div>
+        <h2 class="section-title" style="margin-bottom: 80px;">The MedBridge Journey</h2>
+        
+        <div class="beam-container">
+            <!-- Line -->
+            <div class="beam-rail">
+                <div class="beam-glow" id="beamFill"></div>
+            </div>
+            <!-- Glowing Dot -->
+            <div class="beam-dot" id="beamDot"></div>
+
+            <div class="journey-steps">
+                <div class="step" data-target="0">
+                    <h3>1. Secure Upload</h3>
+                    <p>Patients instantly upload raw, fragmented medical PDFs and clinical notes into their highly secure, encrypted personal dashboard via the Streamlit interface.</p>
+                </div>
+                <div class="step" data-target="1">
+                    <h3>2. AI Extraction & Chunking</h3>
+                    <p>Under the hood, BioBERT processes complex terminology, chunks the text, and maps it directly into a local vector-space powered by ChromaDB.</p>
+                </div>
+                <div class="step" data-target="2">
+                    <h3>3. Conversational RAG</h3>
+                    <p>Patients can immediately interact with our LLaMA-based AI Health Assistant, asking pinpoint questions about their deep medical history and receiving cited answers.</p>
+                </div>
+                <div class="step" data-target="3">
+                    <h3>4. Instant Clinical Sync</h3>
+                    <p>Via cryptographic linking, doctors enter a shared access code and seamlessly ingest the mapped records directly into their own clinical panel view instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Bento Grid Showcase -->
+    <section class="bento-section wrap">
+        <div class="section-tag">Features</div>
+        <h2 class="section-title">A Modern Healthcare Stack.</h2>
+
+        <div class="bento-grid">
+            
+            <!-- Wide Card 2x1: AI Doc -->
+            <div class="bento-card bento-wide">
+                <div class="card-icon">🤖</div>
+                <div class="card-content">
+                    <h3>AI Document Analysis</h3>
+                    <p>Upload raw medical PDFs and let our secure RAG pipelines generate instant, plain-English summaries of complex medical terminology. We process text through BioBERT to ensure clinical-grade precision.</p>
+                </div>
+            </div>
+            
+            <!-- Wide Card 2x1: Risk -->
+            <div class="bento-card bento-wide">
+                <div class="card-icon">🛡️</div>
+                <div class="card-content">
+                    <h3>Automated Risk Scoring</h3>
+                    <p>Real-time population analytics automatically detect high risks for cardiovascular and kidney conditions.</p>
+                </div>
+            </div>
+
+            <!-- Small Card 1x1: Chat -->
+            <div class="bento-card bento-small">
+                <div class="card-icon">💬</div>
+                <div class="card-content">
+                    <h3>Health Chat</h3>
+                    <p>Ask "When was my last A1C?" and get cited answers instantly.</p>
+                </div>
+            </div>
+
+            <!-- Small Card 1x1: Follow-ups -->
+            <div class="bento-card bento-small">
+                <div class="card-icon">📅</div>
+                <div class="card-content">
+                    <h3>Follow-Ups</h3>
+                    <p>AI automatically tracks required post-visit appointments.</p>
+                </div>
+            </div>
+            
+            <!-- Wide Card 2x1: Sharing (highlighted) -->
+            <div class="bento-card bento-wide" style="background: linear-gradient(135deg, rgba(8,145,178,0.1) 0%, rgba(2,132,199,0.1) 100%); border: 1px solid rgba(8,145,178,0.3);">
+                <div class="card-icon">🔗</div>
+                <div class="card-content">
+                    <h3>Cryptographic Sharing</h3>
+                    <p>Patients generate secure, time-limited access codes. Doctors use them to immediately sync the patient into their clinical panel.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="wrap">
+            MedBridge v1.0.0 · Built with FastAPI & Streamlit
+        </div>
+    </footer>
+
+    <!-- Script Engines -->
+    <script>
+        // 2. Typewriter Effect Logic
+        const textTarget = "MedBridge acts as a seamless two-sided platform. AI extracts insights from your fragmented records, creating an instantly searchable, safe hub for you and your doctors.";
+        const subElem = document.getElementById("hero-subtitle");
+        let charIndex = 0;
+        
+        function typeText() {
+            if (charIndex < textTarget.length) {
+                subElem.innerHTML += textTarget.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeText, 30); // 30ms per char
+            } else {
+                // remove cursor after complete
+                const cursor = document.querySelector('.cursor');
+                if(cursor) { setTimeout(() => cursor.style.display = 'none', 3000); }
+            }
+        }
+        
+        // Short delay to let the page fadeUp animation play first
+        setTimeout(typeText, 600);
+
+
+        // 4. Tracing Beam Logic
+        const beamContainer = document.querySelector('.beam-container');
+        const beamFill = document.getElementById('beamFill');
+        const beamDot = document.getElementById('beamDot');
+        const steps = document.querySelectorAll('.step');
+
+        window.addEventListener('scroll', () => {
+            if(!beamContainer) return;
+            const rect = beamContainer.getBoundingClientRect();
+            const topOffset = rect.top;
+            const containerHeight = rect.height;
+            const viewportHeight = window.innerHeight;
+            
+            // Calculate progress measuring the middle of viewport crossing the container
+            let progress = (viewportHeight / 2 - topOffset) / containerHeight;
+            progress = Math.max(0, Math.min(1, progress));
+            
+            beamFill.style.height = `${progress * 100}%`;
+            // Keep dot at the very bottom of the fill line
+            beamDot.style.top = `calc(${progress * 100}% - 8px)`;
+
+            // Light up steps
+            steps.forEach((step, idx) => {
+                const stepRect = step.getBoundingClientRect();
+                // If the middle of the screen passes the top of the step box
+                if(viewportHeight / 2 > stepRect.top + 40) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        });
+
+
+        // 5. Bento Grid Magic Hover Effect Logic
+        const bentoCards = document.querySelectorAll('.bento-card');
+        bentoCards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
