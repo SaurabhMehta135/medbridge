@@ -35,6 +35,7 @@ Backend:
 Frontend apps:
 
 - `BACKEND_URL`
+- `PATIENT_PORTAL_URL` optional for backend landing-page patient button
 - `DOCTOR_PORTAL_URL` optional for the patient app's doctor redirect message
 
 You can start from `.env.example`.
@@ -70,6 +71,8 @@ Set these environment variables in Render:
 - `DATABASE_URL=<your supabase postgres url>`
 - `SECRET_KEY=<long random secret>`
 - `FRONTEND_URLS=<patient streamlit url>,<doctor streamlit url>`
+- `PATIENT_PORTAL_URL=<patient streamlit url>`
+- `DOCTOR_PORTAL_URL=<doctor streamlit url>`
 - `ENV=production`
 - `GROQ_API_KEY=<optional but recommended>`
 - `GROQ_MODEL=<optional>`

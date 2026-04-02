@@ -101,7 +101,12 @@ app.include_router(risk_engine.router)
 @app.get("/", tags=["health"], response_class=HTMLResponse)
 def root():
     html_path = Path(__file__).parent / "static" / "index.html"
-    return HTMLResponse(content=html_path.read_text(encoding="utf-8"), status_code=200)
+    patient_portal_url = os.getenv("PATIENT_PORTAL_URL", "http://localhost:8501")
+    doctor_portal_url = os.getenv("DOCTOR_PORTAL_URL", "http://localhost:8502")
+    html = html_path.read_text(encoding="utf-8")
+    html = html.replace("__PATIENT_PORTAL_URL__", patient_portal_url)
+    html = html.replace("__DOCTOR_PORTAL_URL__", doctor_portal_url)
+    return HTMLResponse(content=html, status_code=200)
 
 
 @app.get("/health", tags=["health"])
