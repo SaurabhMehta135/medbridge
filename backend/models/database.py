@@ -11,17 +11,25 @@ import os
 from datetime import datetime
 
 from sqlalchemy import (
-    Column, Integer, String, Text, Boolean, DateTime, Date, ForeignKey, create_engine
+    Column, Integer, String, Text, Boolean, DateTime, Date, ForeignKey, create_engine, text
 )
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/medbridge.db")
 
-# Conditionally apply check_same_thread only for SQLite
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+# Fail fast on hosted Postgres so Render shows a real DB error instead of timing out.
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(DATABASE_URL, connect_args=connect_args)
+else:
+    connect_args = {"connect_timeout": int(os.getenv("DB_CONNECT_TIMEOUT", "10"))}
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args=connect_args,
+        pool_pre_ping=True,
+        pool_recycle=300,
+    )
 
-# For Supabase PostgreSQL, we just use the raw connection pool
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -132,7 +140,9 @@ class FollowUp(Base):
 # ---------------------------------------------------------------------------
 
 def init_db():
-    """Create all tables if they don't exist."""
+    """Verify connectivity and create all tables if they don't exist."""
+    with engine.connect() as conn:
+        conn.execute(text("SELECT 1"))
     Base.metadata.create_all(bind=engine)
 
 

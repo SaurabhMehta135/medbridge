@@ -43,8 +43,12 @@ logger = logging.getLogger("medbridge")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("🚀 MedBridge starting up — initializing database…")
-    init_db()
-    logger.info("✅ Database tables ready")
+    try:
+        init_db()
+        logger.info("✅ Database tables ready")
+    except Exception:
+        logger.exception("❌ Database initialization failed during startup")
+        raise
     yield
     logger.info("🛑 MedBridge shutting down")
 
