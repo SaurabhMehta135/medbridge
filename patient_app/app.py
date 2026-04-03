@@ -619,54 +619,50 @@ def _show_patient_view(user):
     if st.session_state.patient_page not in nav_items:
         st.session_state.patient_page = "🏠 Dashboard"
 
-    st.markdown(f"""
-    <div class="medbridge-card" style="padding: 20px 24px; margin-bottom: 20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
-            <div>
-                <div class="section-header" style="border:none; margin-bottom:4px; padding-bottom:0;">Patient Navigation</div>
-                <div style="font-size:1.05rem; font-weight:700; color:#0F172A;">👤 {user['full_name']}</div>
-                <div style="color:#64748B; font-size:0.9rem;">{user["email"]}</div>
-            </div>
-            <div style="padding:8px 14px; border-radius:999px; background:#EFF6FF; color:#1D4ED8; font-weight:700; font-size:0.85rem;">
+    rail_col, content_col = st.columns([1.05, 4], gap="large")
+    with rail_col:
+        st.markdown(f"""
+        <div class="medbridge-card" style="padding: 22px 20px; position: sticky; top: 24px;">
+            <div class="section-header" style="border:none; margin-bottom:8px; padding-bottom:0;">Patient Navigation</div>
+            <div style="font-size:1.02rem; font-weight:800; color:#0F172A; margin-bottom:2px;">👤 {user['full_name']}</div>
+            <div style="color:#64748B; font-size:0.88rem; word-break:break-word; margin-bottom:18px;">{user["email"]}</div>
+            <div style="padding:8px 12px; border-radius:12px; background:#EFF6FF; color:#1D4ED8; font-weight:700; font-size:0.82rem; margin-bottom:14px;">
                 Current: {st.session_state.patient_page}
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    nav_cols = st.columns([1, 1, 1, 1, 1, 1, 0.9], gap="small")
-    for idx, item in enumerate(nav_items):
-        with nav_cols[idx]:
+        for idx, item in enumerate(nav_items):
             button_type = "primary" if st.session_state.patient_page == item else "secondary"
-            if st.button(item, key=f"patient_nav_{idx}", use_container_width=True, type=button_type):
+            if st.button(item, key=f"patient_nav_left_{idx}", use_container_width=True, type=button_type):
                 st.session_state.patient_page = item
                 st.rerun()
 
-    with nav_cols[6]:
-        if st.button("🚪 Sign Out", key="patient_signout_top", use_container_width=True):
+        st.markdown("", unsafe_allow_html=True)
+        if st.button("🚪 Sign Out", key="patient_signout_left", use_container_width=True):
             logout()
             st.rerun()
 
-    st.markdown("", unsafe_allow_html=True)
     page = st.session_state.patient_page
 
-    if page == "🏠 Dashboard":
-        _patient_dashboard(user)
-    elif page == "📅 Follow-ups":
-        from patient_app.pages.followups import show_followup_page
-        show_followup_page(API_BASE, api_headers)
-    elif page == "📄 My Documents":
-        from patient_app.pages.upload import show_upload_page
-        show_upload_page(API_BASE, api_headers)
-    elif page == "💬 Health Assistant":
-        from patient_app.pages.chat import show_chat_page
-        show_chat_page(API_BASE, api_headers)
-    elif page == "🔗 Share Records":
-        from patient_app.pages.share import show_share_page
-        show_share_page(API_BASE, api_headers)
-    elif page == "🚨 Emergency Card":
-        from patient_app.pages.emergency_card import show_emergency_card
-        show_emergency_card()
+    with content_col:
+        if page == "🏠 Dashboard":
+            _patient_dashboard(user)
+        elif page == "📅 Follow-ups":
+            from patient_app.pages.followups import show_followup_page
+            show_followup_page(API_BASE, api_headers)
+        elif page == "📄 My Documents":
+            from patient_app.pages.upload import show_upload_page
+            show_upload_page(API_BASE, api_headers)
+        elif page == "💬 Health Assistant":
+            from patient_app.pages.chat import show_chat_page
+            show_chat_page(API_BASE, api_headers)
+        elif page == "🔗 Share Records":
+            from patient_app.pages.share import show_share_page
+            show_share_page(API_BASE, api_headers)
+        elif page == "🚨 Emergency Card":
+            from patient_app.pages.emergency_card import show_emergency_card
+            show_emergency_card()
 
 
 def _patient_dashboard(user):
