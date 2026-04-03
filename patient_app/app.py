@@ -59,43 +59,100 @@ h1, h2, h3 { color: #0F172A !important; }
 
 /* ── Patient Left Rail ── */
 .patient-shell { align-items: flex-start; }
-.patient-rail {
-    background: rgba(255,255,255,0.72);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.55);
-    border-radius: 24px;
-    padding: 22px 18px;
-    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+#patient-rail-anchor { display: none; }
+div[data-testid="column"]:has(#patient-rail-anchor) {
+    background: transparent;
+    padding: 28px 14px 22px 14px;
+    min-height: calc(100vh - 120px);
     position: sticky;
-    top: 20px;
+    top: 12px;
 }
 .patient-rail-profile {
-    padding: 8px 8px 18px 8px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-    margin-bottom: 18px;
+    padding: 32px 14px 18px 14px;
 }
 .patient-rail-name {
-    font-size: 1rem;
+    font-size: 0.98rem;
     font-weight: 800;
     color: #0F172A;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
     word-break: break-word;
 }
 .patient-rail-email {
-    font-size: 0.84rem;
-    color: #64748B;
+    font-size: 0.82rem;
+    color: #60A5FA;
     word-break: break-word;
+    text-decoration: underline;
 }
-.patient-rail-spacer {
-    height: 18px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-    margin: 6px 8px 18px 8px;
+.patient-rail-divider {
+    height: 1px;
+    background: rgba(148, 163, 184, 0.26);
+    margin: 18px 6px;
 }
-.patient-rail-signout {
-    margin-top: 18px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(148, 163, 184, 0.22);
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton {
+    margin-bottom: 6px;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button {
+    justify-content: flex-start !important;
+    text-align: left !important;
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button p {
+    font-size: 0.98rem !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"] {
+    background: transparent !important;
+    padding: 0 !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]::before {
+    display: none !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]::after {
+    inset: 0 !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]:hover::after {
+    background: #F8FAFC !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"] p {
+    color: #0F172A !important;
+    font-weight: 500 !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"] {
+    padding: 0 !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"]::after {
+    inset: 0 !important;
+    border-radius: 12px !important;
+    background: #0EA5E9 !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"] p {
+    font-weight: 700 !important;
+}
+.patient-rail-signout-gap {
+    margin-top: 26px;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button {
+    justify-content: center !important;
+    border: 1px solid #E2E8F0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button::before {
+    display: none !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button::after {
+    inset: 0 !important;
+    border-radius: 12px !important;
+    background: white !important;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button p {
+    color: #0F172A !important;
+    font-weight: 500 !important;
 }
 
 /* ── Badges ── */
@@ -347,7 +404,13 @@ div[data-testid="stVerticalBlockBorderWrapper"] { border-color: #E2E8F0 !importa
 /* ── Mobile Android Responsive Tweaks ── */
 @media screen and (max-width: 768px) {
     .patient-shell { display: block; }
-    .patient-rail { position: static; margin-bottom: 18px; border-radius: 18px; }
+    div[data-testid="column"]:has(#patient-rail-anchor) {
+        position: static;
+        min-height: auto;
+        border-radius: 18px;
+        margin-bottom: 18px;
+        padding: 20px 14px;
+    }
     .main-header { padding: 20px 16px; margin: 0 -10px 16px -10px; border-radius: 12px; }
     .main-header h1 { font-size: 1.3rem; }
     .auth-left-panel { padding: 32px 20px; min-height: auto; margin-bottom: 24px; border-radius: 16px; }
@@ -662,16 +725,15 @@ def _show_patient_view(user):
     if st.session_state.patient_page not in nav_items:
         st.session_state.patient_page = "🏠 Dashboard"
 
-    rail_col, content_col = st.columns([1.1, 4.2], gap="large")
+    rail_col, content_col = st.columns([1.08, 4.35], gap="large")
     with rail_col:
+        st.markdown('<div id="patient-rail-anchor"></div>', unsafe_allow_html=True)
         st.markdown(f"""
-        <div class="patient-rail">
-            <div class="patient-rail-profile">
-                <div class="patient-rail-name">👤 {user['full_name']}</div>
-                <div class="patient-rail-email">{user["email"]}</div>
-            </div>
-            <div class="patient-rail-spacer"></div>
+        <div class="patient-rail-profile">
+            <div class="patient-rail-name">👤 {user['full_name']}</div>
+            <div class="patient-rail-email">{user["email"]}</div>
         </div>
+        <div class="patient-rail-divider"></div>
         """, unsafe_allow_html=True)
 
         for idx, item in enumerate(nav_items):
@@ -680,10 +742,11 @@ def _show_patient_view(user):
                 st.session_state.patient_page = item
                 st.rerun()
 
-        st.markdown('<div class="patient-rail-signout"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="patient-rail-signout-gap"></div><div class="patient-rail-divider"></div><div class="patient-signout">', unsafe_allow_html=True)
         if st.button("🚪 Sign Out", key="patient_signout_left", use_container_width=True, type="secondary"):
             logout()
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     page = st.session_state.patient_page
 
