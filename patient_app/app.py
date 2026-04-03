@@ -57,24 +57,12 @@ h1, h2, h3 { color: #0F172A !important; }
 .metric-card .metric-icon { font-size: 1.5rem; }
 .metric-card .metric-stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
 
-/* ── Patient Left Rail ── */
+/* ── Patient Sidebar ── */
 .patient-shell { align-items: flex-start; }
-#patient-rail-anchor { display: none; }
-div[data-testid="column"]:has(#patient-rail-anchor) {
-    background: #FFFFFF;
-    border-right: 1px solid #F1F5F9;
-    padding: 28px 20px 22px 28px;
-    min-height: calc(100vh - 120px);
-    position: sticky;
-    top: 12px;
-    display: flex;
-    flex-direction: column;
-}
-div[data-testid="column"]:has(#patient-rail-anchor) > div {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding-left: 8px;
+section[data-testid="stSidebar"] {
+    background: #FFFFFF !important;
+    backdrop-filter: none !important;
+    border-right: 1px solid #F1F5F9 !important;
 }
 .patient-rail-profile {
     padding: 24px 8px 14px 8px;
@@ -97,10 +85,10 @@ div[data-testid="column"]:has(#patient-rail-anchor) > div {
     background: rgba(148, 163, 184, 0.18);
     margin: 14px 0;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton {
+section[data-testid="stSidebar"] .stButton {
     margin-bottom: 4px;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button {
+section[data-testid="stSidebar"] .stButton > button {
     justify-content: flex-start !important;
     text-align: left !important;
     min-height: 42px !important;
@@ -108,59 +96,64 @@ div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button {
     border-radius: 10px !important;
     box-shadow: none !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button p {
+section[data-testid="stSidebar"] .stButton > button p {
     font-size: 0.95rem !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"] {
+section[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
     background: transparent !important;
     padding: 0 !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]::before {
+section[data-testid="stSidebar"] .stButton > button[kind="secondary"]::before {
     display: none !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]::after {
+section[data-testid="stSidebar"] .stButton > button[kind="secondary"]::after {
     inset: 0 !important;
     border-radius: 10px !important;
     background: transparent !important;
     backdrop-filter: none !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]:hover::after {
+section[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
+    background: transparent !important;
+}
+section[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover::after {
     background: #F1F5F9 !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"] p {
+section[data-testid="stSidebar"] .stButton > button[kind="secondary"] p {
     color: #334155 !important;
     font-weight: 500 !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"] {
+section[data-testid="stSidebar"] .stButton > button[kind="primary"] {
     padding: 0 !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"]::after {
+section[data-testid="stSidebar"] .stButton > button[kind="primary"]::after {
     inset: 0 !important;
     border-radius: 10px !important;
     background: #0EA5E9 !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"] p {
+section[data-testid="stSidebar"] .stButton > button[kind="primary"] p {
     font-weight: 700 !important;
 }
 .patient-rail-signout-gap {
-    margin-top: auto;
-    padding-top: 20px;
+    margin-top: 20px;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button {
+section[data-testid="stSidebar"] .patient-signout .stButton > button {
     justify-content: center !important;
     border: 1px solid #E2E8F0 !important;
     background: transparent !important;
     padding: 0 !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button::before {
+section[data-testid="stSidebar"] .patient-signout .stButton > button::before {
     display: none !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button::after {
+section[data-testid="stSidebar"] .patient-signout .stButton > button::after {
     inset: 0 !important;
     border-radius: 10px !important;
     background: white !important;
 }
-div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button p {
+section[data-testid="stSidebar"] .patient-signout .stButton > button:hover {
+    background: #FEF2F2 !important;
+}
+section[data-testid="stSidebar"] .patient-signout .stButton > button p {
     color: #0F172A !important;
     font-weight: 500 !important;
 }
@@ -735,9 +728,8 @@ def _show_patient_view(user):
     if st.session_state.patient_page not in nav_items:
         st.session_state.patient_page = "🏠 Dashboard"
 
-    rail_col, content_col = st.columns([1.08, 4.35], gap="large")
-    with rail_col:
-        st.markdown('<div id="patient-rail-anchor"></div>', unsafe_allow_html=True)
+    # ── Sidebar Navigation ──
+    with st.sidebar:
         st.markdown(f"""
         <div class="patient-rail-profile">
             <div class="patient-rail-name">👤 {user['full_name']}</div>
@@ -758,26 +750,26 @@ def _show_patient_view(user):
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
+    # ── Main Content ──
     page = st.session_state.patient_page
 
-    with content_col:
-        if page == "🏠 Dashboard":
-            _patient_dashboard(user)
-        elif page == "📅 Follow-ups":
-            from patient_app.pages.followups import show_followup_page
-            show_followup_page(API_BASE, api_headers)
-        elif page == "📄 My Documents":
-            from patient_app.pages.upload import show_upload_page
-            show_upload_page(API_BASE, api_headers)
-        elif page == "💬 Health Assistant":
-            from patient_app.pages.chat import show_chat_page
-            show_chat_page(API_BASE, api_headers)
-        elif page == "🔗 Share Records":
-            from patient_app.pages.share import show_share_page
-            show_share_page(API_BASE, api_headers)
-        elif page == "🚨 Emergency Card":
-            from patient_app.pages.emergency_card import show_emergency_card
-            show_emergency_card()
+    if page == "🏠 Dashboard":
+        _patient_dashboard(user)
+    elif page == "📅 Follow-ups":
+        from patient_app.pages.followups import show_followup_page
+        show_followup_page(API_BASE, api_headers)
+    elif page == "📄 My Documents":
+        from patient_app.pages.upload import show_upload_page
+        show_upload_page(API_BASE, api_headers)
+    elif page == "💬 Health Assistant":
+        from patient_app.pages.chat import show_chat_page
+        show_chat_page(API_BASE, api_headers)
+    elif page == "🔗 Share Records":
+        from patient_app.pages.share import show_share_page
+        show_share_page(API_BASE, api_headers)
+    elif page == "🚨 Emergency Card":
+        from patient_app.pages.emergency_card import show_emergency_card
+        show_emergency_card()
 
 
 def _patient_dashboard(user):
