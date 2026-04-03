@@ -57,6 +57,47 @@ h1, h2, h3 { color: #0F172A !important; }
 .metric-card .metric-icon { font-size: 1.5rem; }
 .metric-card .metric-stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
 
+/* ── Patient Left Rail ── */
+.patient-shell { align-items: flex-start; }
+.patient-rail {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 24px;
+    padding: 22px 18px;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.06);
+    position: sticky;
+    top: 20px;
+}
+.patient-rail-profile {
+    padding: 8px 8px 18px 8px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    margin-bottom: 18px;
+}
+.patient-rail-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+.patient-rail-email {
+    font-size: 0.84rem;
+    color: #64748B;
+    word-break: break-word;
+}
+.patient-rail-spacer {
+    height: 18px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    margin: 6px 8px 18px 8px;
+}
+.patient-rail-signout {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+}
+
 /* ── Badges ── */
 .badge-high { background: #FEE2E2; color: #DC2626; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
 .badge-medium { background: #FFF7ED; color: #EA580C; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
@@ -305,6 +346,8 @@ div[data-testid="stVerticalBlockBorderWrapper"] { border-color: #E2E8F0 !importa
 
 /* ── Mobile Android Responsive Tweaks ── */
 @media screen and (max-width: 768px) {
+    .patient-shell { display: block; }
+    .patient-rail { position: static; margin-bottom: 18px; border-radius: 18px; }
     .main-header { padding: 20px 16px; margin: 0 -10px 16px -10px; border-radius: 12px; }
     .main-header h1 { font-size: 1.3rem; }
     .auth-left-panel { padding: 32px 20px; min-height: auto; margin-bottom: 24px; border-radius: 16px; }
@@ -619,16 +662,15 @@ def _show_patient_view(user):
     if st.session_state.patient_page not in nav_items:
         st.session_state.patient_page = "🏠 Dashboard"
 
-    rail_col, content_col = st.columns([1.05, 4], gap="large")
+    rail_col, content_col = st.columns([1.1, 4.2], gap="large")
     with rail_col:
         st.markdown(f"""
-        <div class="medbridge-card" style="padding: 22px 20px; position: sticky; top: 24px;">
-            <div class="section-header" style="border:none; margin-bottom:8px; padding-bottom:0;">Patient Navigation</div>
-            <div style="font-size:1.02rem; font-weight:800; color:#0F172A; margin-bottom:2px;">👤 {user['full_name']}</div>
-            <div style="color:#64748B; font-size:0.88rem; word-break:break-word; margin-bottom:18px;">{user["email"]}</div>
-            <div style="padding:8px 12px; border-radius:12px; background:#EFF6FF; color:#1D4ED8; font-weight:700; font-size:0.82rem; margin-bottom:14px;">
-                Current: {st.session_state.patient_page}
+        <div class="patient-rail">
+            <div class="patient-rail-profile">
+                <div class="patient-rail-name">👤 {user['full_name']}</div>
+                <div class="patient-rail-email">{user["email"]}</div>
             </div>
+            <div class="patient-rail-spacer"></div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -638,8 +680,8 @@ def _show_patient_view(user):
                 st.session_state.patient_page = item
                 st.rerun()
 
-        st.markdown("", unsafe_allow_html=True)
-        if st.button("🚪 Sign Out", key="patient_signout_left", use_container_width=True):
+        st.markdown('<div class="patient-rail-signout"></div>', unsafe_allow_html=True)
+        if st.button("🚪 Sign Out", key="patient_signout_left", use_container_width=True, type="secondary"):
             logout()
             st.rerun()
 
