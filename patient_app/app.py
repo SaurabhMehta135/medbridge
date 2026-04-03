@@ -61,7 +61,7 @@ h1, h2, h3 { color: #0F172A !important; }
 .patient-shell { align-items: flex-start; }
 #patient-rail-anchor { display: none; }
 div[data-testid="column"]:has(#patient-rail-anchor) {
-    background: transparent;
+    background: #FFFFFF;
     padding: 28px 14px 22px 14px;
     min-height: calc(100vh - 120px);
     position: sticky;
