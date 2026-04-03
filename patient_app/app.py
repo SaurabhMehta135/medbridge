@@ -335,6 +335,8 @@ if "login_step" not in st.session_state:
     st.session_state.login_step = "email"
 if "login_email" not in st.session_state:
     st.session_state.login_email = ""
+if "patient_page" not in st.session_state:
+    st.session_state.patient_page = "🏠 Dashboard"
 
 
 def _config_value(name: str, default: str = "") -> str:
@@ -575,7 +577,27 @@ def show_auth_page():
 def show_dashboard():
     user = st.session_state.user
     st.markdown("""<style>
-        section[data-testid="stSidebar"] { min-width: 260px !important; }
+        header[data-testid="stHeader"] {
+            visibility: visible !important;
+            height: auto !important;
+        }
+        header[data-testid="stHeader"] > div {
+            background: transparent !important;
+        }
+        [data-testid="collapsedControl"] {
+            display: flex !important;
+            visibility: visible !important;
+        }
+        section[data-testid="stSidebar"] {
+            display: block !important;
+            visibility: visible !important;
+            min-width: 260px !important;
+        }
+        @media screen and (min-width: 769px) {
+            section[data-testid="stSidebar"] {
+                width: 260px !important;
+            }
+        }
     </style>""", unsafe_allow_html=True)
 
     if user["role"] == "patient":
@@ -585,19 +607,48 @@ def show_dashboard():
 
 
 def _show_patient_view(user):
-    with st.sidebar:
-        st.markdown(f"### 👤 {user['full_name']}")
-        st.caption(user["email"])
-        st.divider()
-        page = st.radio(
-            "Navigate",
-            ["🏠 Dashboard", "📄 My Documents", "💬 Health Assistant", "📅 Follow-ups", "🔗 Share Records", "🚨 Emergency Card"],
-            label_visibility="collapsed",
-        )
-        st.divider()
-        if st.button("🚪 Sign Out", use_container_width=True):
+    nav_items = [
+        "🏠 Dashboard",
+        "📄 My Documents",
+        "💬 Health Assistant",
+        "📅 Follow-ups",
+        "🔗 Share Records",
+        "🚨 Emergency Card",
+    ]
+
+    if st.session_state.patient_page not in nav_items:
+        st.session_state.patient_page = "🏠 Dashboard"
+
+    st.markdown(f"""
+    <div class="medbridge-card" style="padding: 20px 24px; margin-bottom: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+            <div>
+                <div class="section-header" style="border:none; margin-bottom:4px; padding-bottom:0;">Patient Navigation</div>
+                <div style="font-size:1.05rem; font-weight:700; color:#0F172A;">👤 {user['full_name']}</div>
+                <div style="color:#64748B; font-size:0.9rem;">{user["email"]}</div>
+            </div>
+            <div style="padding:8px 14px; border-radius:999px; background:#EFF6FF; color:#1D4ED8; font-weight:700; font-size:0.85rem;">
+                Current: {st.session_state.patient_page}
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    nav_cols = st.columns([1, 1, 1, 1, 1, 1, 0.9], gap="small")
+    for idx, item in enumerate(nav_items):
+        with nav_cols[idx]:
+            button_type = "primary" if st.session_state.patient_page == item else "secondary"
+            if st.button(item, key=f"patient_nav_{idx}", use_container_width=True, type=button_type):
+                st.session_state.patient_page = item
+                st.rerun()
+
+    with nav_cols[6]:
+        if st.button("🚪 Sign Out", key="patient_signout_top", use_container_width=True):
             logout()
             st.rerun()
+
+    st.markdown("", unsafe_allow_html=True)
+    page = st.session_state.patient_page
 
     if page == "🏠 Dashboard":
         _patient_dashboard(user)
