@@ -62,19 +62,28 @@ h1, h2, h3 { color: #0F172A !important; }
 #patient-rail-anchor { display: none; }
 div[data-testid="column"]:has(#patient-rail-anchor) {
     background: #FFFFFF;
-    padding: 28px 14px 22px 14px;
+    border-right: 1px solid #F1F5F9;
+    padding: 28px 20px 22px 28px;
     min-height: calc(100vh - 120px);
     position: sticky;
     top: 12px;
+    display: flex;
+    flex-direction: column;
+}
+div[data-testid="column"]:has(#patient-rail-anchor) > div {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-left: 8px;
 }
 .patient-rail-profile {
-    padding: 32px 14px 18px 14px;
+    padding: 24px 8px 14px 8px;
 }
 .patient-rail-name {
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 800;
     color: #0F172A;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     word-break: break-word;
 }
 .patient-rail-email {
@@ -85,22 +94,22 @@ div[data-testid="column"]:has(#patient-rail-anchor) {
 }
 .patient-rail-divider {
     height: 1px;
-    background: rgba(148, 163, 184, 0.26);
-    margin: 18px 6px;
+    background: rgba(148, 163, 184, 0.18);
+    margin: 14px 0;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button {
     justify-content: flex-start !important;
     text-align: left !important;
-    min-height: 44px !important;
-    padding: 10px 14px !important;
-    border-radius: 12px !important;
+    min-height: 42px !important;
+    padding: 8px 14px !important;
+    border-radius: 10px !important;
     box-shadow: none !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button p {
-    font-size: 0.98rem !important;
+    font-size: 0.95rem !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"] {
     background: transparent !important;
@@ -111,15 +120,15 @@ div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="sec
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]::after {
     inset: 0 !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     background: transparent !important;
     backdrop-filter: none !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"]:hover::after {
-    background: #F8FAFC !important;
+    background: #F1F5F9 !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="secondary"] p {
-    color: #0F172A !important;
+    color: #334155 !important;
     font-weight: 500 !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"] {
@@ -127,14 +136,15 @@ div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="pri
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"]::after {
     inset: 0 !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     background: #0EA5E9 !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .stButton > button[kind="primary"] p {
     font-weight: 700 !important;
 }
 .patient-rail-signout-gap {
-    margin-top: 26px;
+    margin-top: auto;
+    padding-top: 20px;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button {
     justify-content: center !important;
@@ -147,7 +157,7 @@ div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton >
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button::after {
     inset: 0 !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     background: white !important;
 }
 div[data-testid="column"]:has(#patient-rail-anchor) .patient-signout .stButton > button p {
