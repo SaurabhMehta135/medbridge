@@ -9,6 +9,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 st.set_page_config(
     page_title="MedBridge — Doctor Portal",
