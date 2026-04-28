@@ -243,6 +243,9 @@ def login(email, password):
                 return False, f"Access Denied: Account registered as '{user['role'].capitalize()}'. Doctor portal access is strictly prohibited."
             st.session_state.dr_user = user
             return True, "Login successful!"
+        else:
+            st.session_state.dr_token = None
+            return False, "Failed to load user profile. Please try again."
     return False, "Invalid email or password"
 
 
@@ -326,6 +329,7 @@ def show_auth_page():
             with st.form("dr_register"):
                 full_name = st.text_input("Full Name (e.g., Dr. Jane Smith)")
                 email = st.text_input("Email", key="dr_reg_email")
+                phone_number = st.text_input("Phone Number", placeholder="555-0100", key="dr_reg_phone")
                 password = st.text_input("Password", type="password", key="dr_reg_pass")
                 specialty = st.selectbox("Specialty", [
                     "General Practice", "Cardiology", "Neurology", "Oncology",
@@ -335,7 +339,7 @@ def show_auth_page():
                 license_num = st.text_input("Medical License Number")
                 submitted = st.form_submit_button("Create Account", use_container_width=True, type="primary")
                 if submitted:
-                    kwargs = {"specialty": specialty}
+                    kwargs = {"specialty": specialty, "phone_number": phone_number}
                     if license_num:
                         kwargs["license_number"] = license_num
                     ok, msg = register(email, password, full_name, **kwargs)
@@ -353,6 +357,9 @@ def show_auth_page():
 
 def show_dashboard():
     user = st.session_state.dr_user
+    if not user:
+        logout()
+        st.rerun()
 
     with st.sidebar:
         st.markdown(f"### 🩺 {user['full_name']}")

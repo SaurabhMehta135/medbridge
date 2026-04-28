@@ -481,6 +481,9 @@ def do_login(email, password):
                 return False, f"Access Denied: Account registered as '{user.get('role').capitalize()}'. Patient portal access is strictly prohibited."
             st.session_state.user = user
             return True, "Welcome back!"
+        else:
+            st.session_state.token = None
+            return False, "Failed to load user profile. Please try again."
     return False, "Invalid email or password"
 
 
@@ -685,6 +688,10 @@ def show_auth_page():
 
 def show_dashboard():
     user = st.session_state.user
+    if not user:
+        logout()
+        st.rerun()
+
     st.markdown("""<style>
         header[data-testid="stHeader"] {
             visibility: visible !important;
