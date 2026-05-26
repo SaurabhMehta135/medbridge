@@ -720,22 +720,21 @@ def show_auth_page():
     with col_brand:
         st.markdown("""
 <div class="auth-left-panel">
-    <div class="mishra-animated-container" style="margin-bottom: 2rem;">
-        <h1 class="mishra-animated-text" style="font-size: 3.5rem !important;">Patient Portal</h1>
-        <div class="mishra-animated-underline"></div>
-    </div>
-    
-    <div class="feature-highlight-container" style="padding: 0;">
-        <div class="fh-item fh-feature-list">
-            <div class="fh-item fh-feature-line">Secure <span class="fh-inline-icon">🔒</span> health vault.</div>
-            <div class="fh-item fh-feature-line">AI-powered <span class="fh-inline-icon">🤖</span> records summary.</div>
-            <div class="fh-item fh-feature-line">Smart <span class="fh-inline-icon">📅</span> follow-ups.</div>
-            <div class="fh-item fh-feature-line">Share with <span class="fh-inline-icon">🩺</span> doctors instantly.</div>
-        </div>
-        <div class="fh-item fh-footer">
-            <p style="margin-top: 1rem;">Your health story, <span class="fh-inline-icon">🌟</span> illuminated.</p>
-        </div>
-    </div>
+<div class="mishra-animated-container" style="margin-bottom: 2rem;">
+<h1 class="mishra-animated-text" style="font-size: 3.5rem !important;">Patient Portal</h1>
+<div class="mishra-animated-underline"></div>
+</div>
+<div class="feature-highlight-container" style="padding: 0;">
+<div class="fh-item fh-feature-list">
+<div class="fh-item fh-feature-line">Secure <span class="fh-inline-icon">🔒</span> health vault.</div>
+<div class="fh-item fh-feature-line">AI-powered <span class="fh-inline-icon">🤖</span> records summary.</div>
+<div class="fh-item fh-feature-line">Smart <span class="fh-inline-icon">📅</span> follow-ups.</div>
+<div class="fh-item fh-feature-line">Share with <span class="fh-inline-icon">🩺</span> doctors instantly.</div>
+</div>
+<div class="fh-item fh-footer">
+<p style="margin-top: 1rem;">Your health story, <span class="fh-inline-icon">🌟</span> illuminated.</p>
+</div>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1163,16 +1162,16 @@ def _patient_dashboard(user):
     # SECTION: Feature Highlight
     st.markdown("""
 <div style="background:white; border:1px solid #E2E8F0; border-radius:16px; padding:24px; margin-top: 24px;">
-    <div class="feature-highlight-container" style="padding: 0;">
-        <div class="fh-item fh-icon">✓</div>
-        <h2 class="fh-item fh-title" style="color: #0F172A !important;">Your health story, illuminated.</h2>
-        <div class="fh-item fh-feature-list">
-            <div class="fh-item fh-feature-line" style="color: #64748B;">Secure <span class="fh-inline-icon">🔒</span> health vault.</div>
-            <div class="fh-item fh-feature-line" style="color: #64748B;">AI-powered <span class="fh-inline-icon">🤖</span> records summary.</div>
-            <div class="fh-item fh-feature-line" style="color: #64748B;">Smart <span class="fh-inline-icon">📅</span> follow-ups.</div>
-            <div class="fh-item fh-feature-line" style="color: #64748B;">Share with <span class="fh-inline-icon">🩺</span> doctors instantly.</div>
-        </div>
-    </div>
+<div class="feature-highlight-container" style="padding: 0;">
+<div class="fh-item fh-icon">✓</div>
+<h2 class="fh-item fh-title" style="color: #0F172A !important;">Your health story, illuminated.</h2>
+<div class="fh-item fh-feature-list">
+<div class="fh-item fh-feature-line" style="color: #64748B;">Secure <span class="fh-inline-icon">🔒</span> health vault.</div>
+<div class="fh-item fh-feature-line" style="color: #64748B;">AI-powered <span class="fh-inline-icon">🤖</span> records summary.</div>
+<div class="fh-item fh-feature-line" style="color: #64748B;">Smart <span class="fh-inline-icon">📅</span> follow-ups.</div>
+<div class="fh-item fh-feature-line" style="color: #64748B;">Share with <span class="fh-inline-icon">🩺</span> doctors instantly.</div>
+</div>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
