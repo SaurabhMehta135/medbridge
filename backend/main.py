@@ -11,7 +11,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,7 +22,9 @@ load_dotenv()
 # Ensure project root is on sys.path (needed for Render deployment)
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from backend.models.database import init_db
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from backend.models.database import init_db, get_db
 from backend.routers import auth, patient, doctor, chat, alerts, risk_engine
 
 # ---------------------------------------------------------------------------
@@ -110,5 +112,7 @@ def root():
 
 
 @app.get("/health", tags=["health"])
-def health_check():
+def health_check(db: Session = Depends(get_db)):
+    # Ping the database so Supabase registers activity
+    db.execute(text("SELECT 1"))
     return {"status": "healthy"}
