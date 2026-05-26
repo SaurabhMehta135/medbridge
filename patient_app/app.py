@@ -564,7 +564,7 @@ def show_auth_page():
         st.markdown("""
         <div class="auth-left-panel">
             <div class="mishra-animated-container">
-                <h1 class="mishra-animated-text">Mishra Hub</h1>
+                <h1 class="mishra-animated-text">Patient Portal</h1>
                 <div class="mishra-animated-underline"></div>
             </div>
             <p class="tagline">Your complete health story, in one place.</p>

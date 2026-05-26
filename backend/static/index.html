@@ -142,6 +142,45 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Animated Gradient Text Styles for main website */
+        .mishra-animated-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        .mishra-animated-text {
+            font-weight: 900 !important;
+            margin: 0 !important;
+            background: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+            animation: fadeInSpring 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .mishra-animated-underline {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
+            border-radius: 4px;
+            width: 0%;
+            animation: expandUnderline 0.8s ease-out 0.5s forwards;
+        }
+        @keyframes fadeInSpring {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes expandUnderline {
+            to { width: 100%; }
+        }
+
         /* 3. MOVING BORDER BUTTONS (Aceternity UI Mimic) */
         .cta-container {
             display: flex; justify-content: center; align-items: center; gap: 24px;
@@ -316,16 +355,22 @@
                 <!-- 3. Moving Border Button Mimic -->
                 <a href="https://medbridge-exe9wztm5yicxtjra8uekt.streamlit.app" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                     <div class="mov-border-wrapper patient-wrapper">
-                        <div class="btn-inner btn-patient">
-                            🧑‍💼 Launch Patient Portal
+                        <div class="btn-inner btn-patient" style="background: white;">
+                            <div class="mishra-animated-container">
+                                <span class="mishra-animated-text" style="font-size: 16px;">🧑‍💼 Patient Portal</span>
+                                <div class="mishra-animated-underline"></div>
+                            </div>
                         </div>
                     </div>
                 </a>
                 
                 <a href="https://medbridge-zaepfmptvzbs2meybvwbq4.streamlit.app" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                     <div class="mov-border-wrapper doctor-wrapper">
-                        <div class="btn-inner btn-doctor">
-                            🩺 Launch Doctor Portal <span class="arrow">→</span>
+                        <div class="btn-inner btn-doctor" style="background: white;">
+                            <div class="mishra-animated-container">
+                                <span class="mishra-animated-text" style="font-size: 16px;">🩺 Doctor Portal</span>
+                                <div class="mishra-animated-underline"></div>
+                            </div>
                         </div>
                     </div>
                 </a>
