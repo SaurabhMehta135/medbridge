@@ -478,24 +478,24 @@ def show_auth_page():
 
     with col_brand:
         st.markdown("""
-        <div class="auth-left-panel">
-            <div class="mishra-animated-container" style="margin-bottom: 2rem;">
-                <h1 class="mishra-animated-text" style="font-size: 3.5rem !important;">Doctor Portal</h1>
-                <div class="mishra-animated-underline"></div>
-            </div>
-            
-            <div class="feature-highlight-container" style="padding: 0;">
-                <div class="fh-item fh-feature-list">
-                    <div class="fh-item fh-feature-line">Automated <span class="fh-inline-icon">📊</span> risk scoring.</div>
-                    <div class="fh-item fh-feature-line">AI-powered <span class="fh-inline-icon">🤖</span> clinical chat.</div>
-                    <div class="fh-item fh-feature-line">Track <span class="fh-inline-icon">📋</span> follow-ups instantly.</div>
-                </div>
-                <div class="fh-item fh-footer">
-                    <p style="margin-top: 1rem;">Designed for <span class="fh-inline-icon">🩺</span> Healthcare Professionals.</p>
-                </div>
-            </div>
+<div class="auth-left-panel">
+    <div class="mishra-animated-container" style="margin-bottom: 2rem;">
+        <h1 class="mishra-animated-text" style="font-size: 3.5rem !important;">Doctor Portal</h1>
+        <div class="mishra-animated-underline"></div>
+    </div>
+    
+    <div class="feature-highlight-container" style="padding: 0;">
+        <div class="fh-item fh-feature-list">
+            <div class="fh-item fh-feature-line">Automated <span class="fh-inline-icon">📊</span> risk scoring.</div>
+            <div class="fh-item fh-feature-line">AI-powered <span class="fh-inline-icon">🤖</span> clinical chat.</div>
+            <div class="fh-item fh-feature-line">Track <span class="fh-inline-icon">📋</span> follow-ups instantly.</div>
         </div>
-        """, unsafe_allow_html=True)
+        <div class="fh-item fh-footer">
+            <p style="margin-top: 1rem;">Designed for <span class="fh-inline-icon">🩺</span> Healthcare Professionals.</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
     with col_form:
         st.markdown("<div style='padding: 48px 20px 20px 20px;'>", unsafe_allow_html=True)
@@ -758,18 +758,18 @@ def show_dashboard_page():
             
         # SECTION 7 - Feature Highlight
         st.markdown("""
-        <div style="background:white; border:1px solid #E2E8F0; border-radius:16px; padding:24px; margin-top: 24px;">
-            <div class="feature-highlight-container" style="padding: 0;">
-                <div class="fh-item fh-icon">✓</div>
-                <h2 class="fh-item fh-title" style="color: #0F172A !important;">Easy. Does it all.</h2>
-                <div class="fh-item fh-feature-list">
-                    <div class="fh-item fh-feature-line" style="color: #64748B;">Automated <span class="fh-inline-icon">📊</span> risk scoring.</div>
-                    <div class="fh-item fh-feature-line" style="color: #64748B;">AI-powered <span class="fh-inline-icon">🤖</span> clinical chat.</div>
-                    <div class="fh-item fh-feature-line" style="color: #64748B;">Track <span class="fh-inline-icon">📋</span> follow-ups instantly.</div>
-                </div>
-            </div>
+<div style="background:white; border:1px solid #E2E8F0; border-radius:16px; padding:24px; margin-top: 24px;">
+    <div class="feature-highlight-container" style="padding: 0;">
+        <div class="fh-item fh-icon">✓</div>
+        <h2 class="fh-item fh-title" style="color: #0F172A !important;">Easy. Does it all.</h2>
+        <div class="fh-item fh-feature-list">
+            <div class="fh-item fh-feature-line" style="color: #64748B;">Automated <span class="fh-inline-icon">📊</span> risk scoring.</div>
+            <div class="fh-item fh-feature-line" style="color: #64748B;">AI-powered <span class="fh-inline-icon">🤖</span> clinical chat.</div>
+            <div class="fh-item fh-feature-line" style="color: #64748B;">Track <span class="fh-inline-icon">📋</span> follow-ups instantly.</div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 
 def show_access_code_page():
