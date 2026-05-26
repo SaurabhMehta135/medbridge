@@ -26,6 +26,47 @@ st.set_page_config(
 
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Animated Gradient Text Styles */
+.mishra-animated-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    position: relative;
+    width: fit-content;
+}
+.mishra-animated-text {
+    font-size: 3rem !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+    background: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 2;
+    animation: fadeInSpring 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+.mishra-animated-underline {
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
+    border-radius: 4px;
+    width: 0%;
+    animation: expandUnderline 0.8s ease-out 0.5s forwards;
+}
+
+@keyframes fadeInSpring {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes expandUnderline {
+    to { width: 100%; }
+}
 html, body, [class*="css"] { font-family: 'Inter', -apple-system, sans-serif; }
 p, h1, h2, h3, h4, h5, h6, div, span, input, button, textarea { font-family: 'Inter', sans-serif; }
 .stApp { background-color: transparent !important; }
@@ -274,47 +315,6 @@ def show_auth_page():
     st.markdown("""<style>
         [data-testid="collapsedControl"] { display: none; }
         section[data-testid="stSidebar"] { display: none; }
-        
-        /* Animated Gradient Text Styles */
-        .mishra-animated-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 24px;
-            position: relative;
-            width: fit-content;
-        }
-        .mishra-animated-text {
-            font-size: 3rem !important;
-            font-weight: 900 !important;
-            margin: 0 !important;
-            background: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 2;
-            animation: fadeInSpring 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        .mishra-animated-underline {
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            height: 4px;
-            background: linear-gradient(to right, #3b82f6, #a855f7, #ec4899);
-            border-radius: 4px;
-            width: 0%;
-            animation: expandUnderline 0.8s ease-out 0.5s forwards;
-        }
-        
-        @keyframes fadeInSpring {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes expandUnderline {
-            to { width: 100%; }
-        }
     </style>""", unsafe_allow_html=True)
 
     col_brand, col_form = st.columns([2, 3], gap="large")
@@ -438,8 +438,11 @@ def show_dashboard_page():
     user = st.session_state.dr_user
 
     st.markdown("""
-    <div class="main-header">
-        <h1>Welcome, {name}! 👋</h1>
+    <div class="main-header" style="padding-bottom: 32px;">
+        <div class="mishra-animated-container" style="margin-bottom: 8px;">
+            <h1 class="mishra-animated-text" style="font-size: 2.2rem !important;">Welcome, {name}! 👋</h1>
+            <div class="mishra-animated-underline"></div>
+        </div>
         <p>Population Analytics Dashboard — MedBridge</p>
     </div>
     """.format(name=user["full_name"]), unsafe_allow_html=True)
