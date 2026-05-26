@@ -277,6 +277,85 @@
         @keyframes shimmer { to { rotate: 360deg; } }
         @keyframes breathe { from, to { scale: 1; } 50% { scale: 1.2; } }
 
+        /* Feature Highlight Styles */
+        .feature-highlight-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 2rem 0;
+            text-align: left;
+            max-width: 36rem;
+            margin: 0 auto;
+        }
+
+        .fh-item {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fh-spring-up 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .fh-item:nth-child(1) { animation-delay: 0.1s; }
+        .fh-item:nth-child(2) { animation-delay: 0.3s; }
+        .fh-item:nth-child(3) { animation-delay: 0.5s; }
+        .fh-item:nth-child(4) { animation-delay: 0.7s; }
+
+        @keyframes fh-spring-up {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fh-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 3rem; height: 3rem; border-radius: 9999px;
+            background-color: #3B82F6; color: white; font-size: 1.5rem;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+
+        .fh-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .fh-feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .fh-feature-line {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        
+        .fh-feature-line:nth-child(1) { animation-delay: 0.5s; }
+        .fh-feature-line:nth-child(2) { animation-delay: 0.6s; }
+        .fh-feature-line:nth-child(3) { animation-delay: 0.7s; }
+        .fh-feature-line:nth-child(4) { animation-delay: 0.8s; }
+        .fh-feature-line:nth-child(5) { animation-delay: 0.9s; }
+
+        .fh-inline-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 1.75rem;
+            width: 1.75rem;
+            vertical-align: middle;
+            margin: 0 0.25rem;
+            background: rgba(0,0,0,0.04);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .fh-footer {
+            padding-top: 1rem;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+
         .cta-caption {
             display: block; width: 100%; text-align: center;
             margin-top: 24px; font-size: 13px; font-weight: 500;
@@ -419,6 +498,24 @@
             <span class="cta-caption">Secured via cryptographic models. HIPAA Compliant Environment.</span>
         </section>
     </div>
+
+    <!-- Feature Highlight Section -->
+    <section class="wrap">
+        <div class="feature-highlight-container">
+            <div class="fh-item fh-icon">✓</div>
+            <h2 class="fh-item fh-title">Easy. Does it all.</h2>
+            <div class="fh-item fh-feature-list">
+                <div class="fh-item fh-feature-line">Upload your <span class="fh-inline-icon">📄</span> medical records.</div>
+                <div class="fh-item fh-feature-line">AI extracts the <span class="fh-inline-icon">💡</span> insights.</div>
+                <div class="fh-item fh-feature-line">Share securely with your <span class="fh-inline-icon">🩺</span> doctor.</div>
+                <div class="fh-item fh-feature-line">Get <span class="fh-inline-icon">💊</span> prescriptions delivered.</div>
+                <div class="fh-item fh-feature-line">Monitor your <span class="fh-inline-icon">📊</span> health over time.</div>
+            </div>
+            <div class="fh-item fh-footer">
+                <p>Just log in as a <span class="fh-inline-icon">🧑‍💼</span> Patient or <span class="fh-inline-icon">🩺</span> Doctor to get started.</p>
+            </div>
+        </div>
+    </section>
 
     <!-- 4. Tracing Beam Section -->
     <section class="tracing-beam-section wrap">

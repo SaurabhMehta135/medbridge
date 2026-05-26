@@ -67,6 +67,83 @@ st.markdown("""<style>
 @keyframes expandUnderline {
     to { width: 100%; }
 }
+
+/* Feature Highlight Styles */
+.feature-highlight-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    text-align: left;
+    max-width: 36rem;
+}
+
+.fh-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fh-spring-up 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.fh-item:nth-child(1) { animation-delay: 0.1s; }
+.fh-item:nth-child(2) { animation-delay: 0.3s; }
+.fh-item:nth-child(3) { animation-delay: 0.5s; }
+.fh-item:nth-child(4) { animation-delay: 0.7s; }
+
+@keyframes fh-spring-up {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fh-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 2.5rem; height: 2.5rem; border-radius: 9999px;
+    background-color: #0891B2; color: white; font-size: 1.25rem;
+    box-shadow: 0 4px 14px rgba(8, 145, 178, 0.4);
+    margin-bottom: 0.5rem;
+}
+
+.fh-title {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.025em !important;
+    color: white !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.fh-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.fh-feature-line {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.4;
+}
+
+.fh-feature-line:nth-child(1) { animation-delay: 0.5s; }
+.fh-feature-line:nth-child(2) { animation-delay: 0.6s; }
+.fh-feature-line:nth-child(3) { animation-delay: 0.7s; }
+
+.fh-inline-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    vertical-align: middle;
+    margin: 0 0.25rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.fh-footer {
+    padding-top: 1rem;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.6);
+}
 html, body, [class*="css"] { font-family: 'Inter', -apple-system, sans-serif; }
 p, h1, h2, h3, h4, h5, h6, div, span, input, button, textarea { font-family: 'Inter', sans-serif; }
 .stApp { background-color: transparent !important; }
@@ -402,30 +479,19 @@ def show_auth_page():
     with col_brand:
         st.markdown("""
         <div class="auth-left-panel">
-            <div class="mishra-animated-container">
-                <h1 class="mishra-animated-text">Doctor Portal</h1>
+            <div class="mishra-animated-container" style="margin-bottom: 2rem;">
+                <h1 class="mishra-animated-text" style="font-size: 3.5rem !important;">Doctor Portal</h1>
                 <div class="mishra-animated-underline"></div>
             </div>
-            <p class="tagline">Clinical intelligence at your fingertips.</p>
-            <div class="auth-feature">
-                <div class="auth-feature-icon">📊</div>
-                <div class="auth-feature-text">
-                    <h4>Risk Assessment</h4>
-                    <p>Automated cardiovascular, diabetes & kidney risk scoring</p>
+            
+            <div class="feature-highlight-container" style="padding: 0;">
+                <div class="fh-item fh-feature-list">
+                    <div class="fh-item fh-feature-line">Automated <span class="fh-inline-icon">📊</span> risk scoring.</div>
+                    <div class="fh-item fh-feature-line">AI-powered <span class="fh-inline-icon">🤖</span> clinical chat.</div>
+                    <div class="fh-item fh-feature-line">Track <span class="fh-inline-icon">📋</span> follow-ups instantly.</div>
                 </div>
-            </div>
-            <div class="auth-feature">
-                <div class="auth-feature-icon">🤖</div>
-                <div class="auth-feature-text">
-                    <h4>Clinical AI Chat</h4>
-                    <p>AI-powered analysis scoped to patient records</p>
-                </div>
-            </div>
-            <div class="auth-feature">
-                <div class="auth-feature-icon">📋</div>
-                <div class="auth-feature-text">
-                    <h4>Follow-up Management</h4>
-                    <p>Track and manage patient follow-up items</p>
+                <div class="fh-item fh-footer">
+                    <p style="margin-top: 1rem;">Designed for <span class="fh-inline-icon">🩺</span> Healthcare Professionals.</p>
                 </div>
             </div>
         </div>
@@ -689,6 +755,21 @@ def show_dashboard_page():
             st.markdown(feed_html, unsafe_allow_html=True)
         else:
             st.info("No recent activity.")
+            
+        # SECTION 7 - Feature Highlight
+        st.markdown("""
+        <div style="background:white; border:1px solid #E2E8F0; border-radius:16px; padding:24px; margin-top: 24px;">
+            <div class="feature-highlight-container" style="padding: 0;">
+                <div class="fh-item fh-icon">✓</div>
+                <h2 class="fh-item fh-title" style="color: #0F172A !important;">Easy. Does it all.</h2>
+                <div class="fh-item fh-feature-list">
+                    <div class="fh-item fh-feature-line" style="color: #64748B;">Automated <span class="fh-inline-icon">📊</span> risk scoring.</div>
+                    <div class="fh-item fh-feature-line" style="color: #64748B;">AI-powered <span class="fh-inline-icon">🤖</span> clinical chat.</div>
+                    <div class="fh-item fh-feature-line" style="color: #64748B;">Track <span class="fh-inline-icon">📋</span> follow-ups instantly.</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 def show_access_code_page():
