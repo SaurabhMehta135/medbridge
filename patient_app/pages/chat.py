@@ -1,20 +1,23 @@
 """Patient App — Health Chat Page"""
 
 import streamlit as st
-import requests
+from core.api_client import api_client
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from shared.icons import icon, icon_label
 
 
 def show_chat_page(api_base, api_headers_fn):
-    st.markdown("""
-    <div class="main-header" style="background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 60%, #8B5CF6 100%); box-shadow: 0 4px 16px rgba(124,58,237,0.15);">
-        <h1>💬 Health Assistant</h1>
+    st.markdown(f"""
+    <div class="page-header">
+        <h1>{icon('message-circle', size=28, color='#0891B2')} Health Assistant</h1>
         <p>Ask questions about your medical records in plain language</p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(f"""
     <div class="alert-info">
-        💡 <strong>Tip:</strong> Ask things like "What medications am I taking?",
+        {icon('lightbulb', size=16, color='#0891B2')} <strong>Tip:</strong> Ask things like "What medications am I taking?",
         "Summarize my last lab results", or "Do I have any allergies listed?"
     </div>
     """, unsafe_allow_html=True)
@@ -25,7 +28,7 @@ def show_chat_page(api_base, api_headers_fn):
 
     # Suggested questions when empty
     if not st.session_state.chat_history:
-        st.markdown('<p class="section-header">💡 Suggested Questions</p>', unsafe_allow_html=True)
+        st.markdown(f'<p class="section-header">{icon_label("lightbulb", "Suggested Questions", color="#94A3B8")}</p>', unsafe_allow_html=True)
         cols = st.columns(3)
         suggestions = [
             "What medications am I taking?",
@@ -39,9 +42,9 @@ def show_chat_page(api_base, api_headers_fn):
                     st.rerun()
 
         # Empty state illustration
-        st.markdown("""
+        st.markdown(f"""
         <div class="chat-empty-state">
-            <div class="icon">🩺</div>
+            <div class="icon">{icon('stethoscope', size=36, color='#94A3B8')}</div>
             <div class="title">Your health records are ready</div>
             <div class="subtitle">Ask me anything about your medical history</div>
         </div>
@@ -49,49 +52,40 @@ def show_chat_page(api_base, api_headers_fn):
 
     # Display chat history
     for msg in st.session_state.chat_history:
-        with st.chat_message(msg["role"], avatar="🧑‍💻" if msg["role"] == "user" else "🤖"):
+        with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("sources"):
                 sources_html = " ".join([f'<span class="badge-info">{s}</span>' for s in msg["sources"]])
-                st.markdown(f"📎 {sources_html}", unsafe_allow_html=True)
+                st.markdown(f"{icon('paperclip', size=14, color='#0891B2')} {sources_html}", unsafe_allow_html=True)
 
     # Chat input
     if prompt := st.chat_input("Ask about your health records..."):
-        with st.chat_message("user", avatar="🧑‍💻"):
+        with st.chat_message("user"):
             st.markdown(prompt)
         st.session_state.chat_history.append({"role": "user", "content": prompt})
 
-        with st.chat_message("assistant", avatar="🤖"):
-            with st.spinner("Searching your records..."):
+        with st.chat_message("assistant"):
+            with st.spinner("Analyzing your records..."):
                 try:
-                    r = requests.post(
-                        f"{api_base}/api/chat/patient",
-                        json={"message": prompt},
-                        headers=api_headers_fn(),
-                    )
-                    if r.status_code == 200:
-                        data = r.json()
-                        st.markdown(data["answer"])
-                        if data.get("sources"):
-                            sources_html = " ".join([f'<span class="badge-info">{s}</span>' for s in data["sources"]])
-                            st.markdown(f"📎 {sources_html}", unsafe_allow_html=True)
-                        st.session_state.chat_history.append({
-                            "role": "assistant",
-                            "content": data["answer"],
-                            "sources": data.get("sources", []),
-                        })
-                    else:
-                        error_msg = "Sorry, I couldn't process your question. Please try again."
-                        st.error(error_msg)
-                        st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
-                except Exception as e:
-                    error_msg = "Connection error: Please ensure the backend server is running."
+                    data = api_client.send_chat_message(prompt)
+                    answer = data.get("answer", data.get("reply", "No response received."))
+                    st.markdown(answer)
+                    if data.get("sources"):
+                        sources_html = " ".join([f'<span class="badge-info">{s}</span>' for s in data["sources"]])
+                        st.markdown(f"{icon('paperclip', size=14, color='#0891B2')} {sources_html}", unsafe_allow_html=True)
+                    st.session_state.chat_history.append({
+                        "role": "assistant",
+                        "content": answer,
+                        "sources": data.get("sources", []),
+                    })
+                except Exception:
+                    error_msg = "Failed to connect to AI service."
                     st.error(error_msg)
                     st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
 
     # Clear chat button
     if st.session_state.chat_history:
         st.divider()
-        if st.button("🧹 Clear Chat History"):
+        if st.button("Clear Chat History"):
             st.session_state.chat_history = []
             st.rerun()

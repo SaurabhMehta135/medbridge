@@ -1,21 +1,22 @@
 """Doctor App — Clinical Chat Page"""
 
 import streamlit as st
-import requests
-
+from core.api_client import api_client
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared.icons import icon, icon_label, status_icon
 
 def show_clinical_chat(api_base, api_headers_fn):
     st.markdown("""
     <div class="main-header" style="background: linear-gradient(135deg, #0891B2, #0E7490);">
-        <h1>💬 Clinical Chat</h1>
-        <p>AI-powered analysis scoped to a specific patient's records</p>
+        <h1>Clinical AI Assistant</h1>
+        <p>Ask medical questions or discuss patient cases securely</p>
     </div>
     """, unsafe_allow_html=True)
 
     # Fetch patients
     try:
-        r = requests.get(f"{api_base}/api/doctor/patients", headers=api_headers_fn())
-        patients = r.json() if r.status_code == 200 else []
+        patients = api_client.get_patients()
     except Exception:
         patients = []
 
@@ -40,16 +41,16 @@ def show_clinical_chat(api_base, api_headers_fn):
         <div style="width:42px;height:42px;border-radius:50%;background:#0891B2;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;flex-shrink:0;">{initials}</div>
         <div>
             <strong style="color:#0F172A;">{patient['full_name']}</strong> &nbsp;|&nbsp;
-            🩸 {patient.get('blood_type', 'N/A')} &nbsp;|&nbsp;
-            ⚠️ Allergies: {patient.get('allergies', 'None')} &nbsp;|&nbsp;
-            💊 Meds: {patient.get('medications', 'None')}
+            {patient.get('blood_type', 'N/A')} &nbsp;|&nbsp;
+            Allergies: {patient.get('allergies', 'None')} &nbsp;|&nbsp;
+            Meds: {patient.get('medications', 'None')}
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="alert-warning" style="font-size:0.85rem;">
-        ⚕️ <strong>Clinical mode:</strong> Responses use precise clinical terminology
+        <strong>Clinical mode:</strong> Responses use precise clinical terminology
         with references to specific documents. <em>For professional use only.</em>
     </div>
     """, unsafe_allow_html=True)
@@ -61,33 +62,33 @@ def show_clinical_chat(api_base, api_headers_fn):
 
     # Display chat
     for msg in st.session_state[chat_key]:
-        with st.chat_message(msg["role"], avatar="🩺" if msg["role"] == "user" else "🤖"):
+        with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
             if msg.get("sources"):
                 sources_html = " ".join([f'<span class="badge-info">{s}</span>' for s in msg["sources"]])
-                st.markdown(f"📎 {sources_html}", unsafe_allow_html=True)
+                st.markdown(f"{icon('paperclip', size=14, color='#0891B2')} {sources_html}", unsafe_allow_html=True)
 
     # Quick action buttons (teal pills)
     if not st.session_state[chat_key]:
         st.markdown('<p class="section-header">Quick Actions</p>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.button("📋 Summarize records", use_container_width=True):
-                _send_message(api_base, api_headers_fn, patient["id"], chat_key,
+            if st.button("Summarize records", use_container_width=True):
+                _send_message(patient["id"], chat_key,
                              "Please provide a comprehensive clinical summary of this patient's medical records.")
         with col2:
-            if st.button("🔬 Recent labs", use_container_width=True):
-                _send_message(api_base, api_headers_fn, patient["id"], chat_key,
+            if st.button("Recent labs", use_container_width=True):
+                _send_message(patient["id"], chat_key,
                              "What are the most recent lab results? Highlight any abnormal values.")
         with col3:
-            if st.button("⚠️ Risk factors", use_container_width=True):
-                _send_message(api_base, api_headers_fn, patient["id"], chat_key,
+            if st.button("Risk factors", use_container_width=True):
+                _send_message(patient["id"], chat_key,
                              "What are the key risk factors and concerns for this patient based on their records?")
 
         # Empty state illustration
-        st.markdown("""
+        st.markdown(f"""
         <div class="chat-empty-state">
-            <div class="icon">🩺</div>
+            <div class="icon">{icon('stethoscope', size=48, color='#94A3B8')}</div>
             <div class="title">Clinical AI Assistant</div>
             <div class="subtitle">Select a patient and ask clinical questions</div>
         </div>
@@ -95,37 +96,30 @@ def show_clinical_chat(api_base, api_headers_fn):
 
     # Chat input
     if prompt := st.chat_input("Ask about this patient's records..."):
-        _send_message(api_base, api_headers_fn, patient["id"], chat_key, prompt)
+        _send_message(patient["id"], chat_key, prompt)
 
 
-def _send_message(api_base, api_headers_fn, patient_id, chat_key, message):
+def _send_message(patient_id, chat_key, message):
     """Send a message and display the response."""
-    with st.chat_message("user", avatar="🩺"):
+    with st.chat_message("user"):
         st.markdown(message)
     st.session_state[chat_key].append({"role": "user", "content": message})
 
-    with st.chat_message("assistant", avatar="🤖"):
-        with st.spinner("Analyzing patient records..."):
+    with st.chat_message("assistant"):
+        with st.spinner("Analyzing case..."):
             try:
-                r = requests.post(
-                    f"{api_base}/api/chat/doctor",
-                    json={"message": message, "patient_id": patient_id},
-                    headers=api_headers_fn(),
-                )
-                if r.status_code == 200:
-                    data = r.json()
-                    st.markdown(data["answer"])
-                    if data.get("sources"):
-                        sources_html = " ".join([f'<span class="badge-info">{s}</span>' for s in data["sources"]])
-                        st.markdown(f"📎 {sources_html}", unsafe_allow_html=True)
-                    st.session_state[chat_key].append({
-                        "role": "assistant",
-                        "content": data["answer"],
-                        "sources": data.get("sources", []),
-                    })
-                else:
-                    st.error("Failed to get a response")
+                data = api_client.send_chat_message(patient_id, message)
+                answer = data.get("answer", data.get("reply", "No response received."))
+                st.markdown(answer)
+                if data.get("sources"):
+                    sources_html = " ".join([f'<span class="badge-info">{s}</span>' for s in data["sources"]])
+                    st.markdown(f"{icon('paperclip', size=14, color='#0891B2')} {sources_html}", unsafe_allow_html=True)
+                st.session_state[chat_key].append({
+                    "role": "assistant",
+                    "content": answer,
+                    "sources": data.get("sources", []),
+                })
             except Exception as e:
-                st.error(f"Connection error: {e}")
+                st.error("Failed to connect to AI service.")
 
     st.rerun()

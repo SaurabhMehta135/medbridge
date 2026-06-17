@@ -1,19 +1,22 @@
 """Patient App — Document Upload & Management Page"""
 
 import streamlit as st
-import requests
+from core.api_client import api_client
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from shared.icons import icon, icon_label, doc_type_icon_circle
 
 
 def show_upload_page(api_base, api_headers_fn):
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header">
-        <h1>📄 My Documents</h1>
+        <h1>{icon('file-text', size=28, color='#0891B2')} My Documents</h1>
         <p>Upload and manage your medical records</p>
     </div>
     """, unsafe_allow_html=True)
 
     # Upload section
-    st.markdown('<p class="section-header">📤 Upload New Document</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="section-header">{icon_label("upload", "Upload New Document", color="#94A3B8")}</p>', unsafe_allow_html=True)
     with st.form("upload_form", clear_on_submit=True):
         file = st.file_uploader(
             "Choose a medical document",
@@ -27,47 +30,41 @@ def show_upload_page(api_base, api_headers_fn):
         ])
         col1, col2 = st.columns(2)
         with col1:
-            submit = st.form_submit_button("⬆️ Upload", use_container_width=True, type="primary")
+            submit = st.form_submit_button("Upload", use_container_width=True, type="primary")
         with col2:
-            process_after = st.form_submit_button("🤖 Upload & Process with AI", use_container_width=True)
+            process_after = st.form_submit_button("Upload & Process with AI", use_container_width=True)
 
         if (submit or process_after) and file:
             with st.spinner("Uploading your document..."):
                 files = {"file": (file.name, file.getvalue(), file.type)}
                 data = {"doc_type": doc_type}
-                r = requests.post(
-                    f"{api_base}/api/patient/documents/upload",
-                    files=files, data=data,
-                    headers=api_headers_fn(),
-                )
-                if r.status_code == 201:
-                    doc = r.json()
-                    st.success(f"✅ Uploaded: {file.name}")
+                try:
+                    doc = api_client.upload_document(files, data)
+                    st.success(f"Uploaded: {file.name}")
 
                     if process_after:
-                        with st.spinner("🤖 Analyzing your document with AI..."):
-                            r2 = requests.post(
-                                f"{api_base}/api/patient/documents/{doc['id']}/process",
-                                headers=api_headers_fn(),
-                            )
-                            if r2.status_code == 200:
-                                st.success("🧠 Document processed! Summary generated.")
-                                r_summ = requests.get(f"{api_base}/api/patient/documents/{doc['id']}/summary", headers=api_headers_fn())
-                                if r_summ.status_code == 200 and r_summ.json().get('patient_summary'):
-                                    st.markdown("### 📝 Your Report Explained")
-                                    st.markdown(f'<div class="alert-success">{r_summ.json()["patient_summary"]}</div>', unsafe_allow_html=True)
-                            else:
+                        with st.spinner("Analyzing your document with AI..."):
+                            try:
+                                api_client.process_document(doc['id'])
+                                st.success("Document processed! Summary generated.")
+                                try:
+                                    r_summ = api_client.get_document_summary(doc['id'])
+                                    if r_summ.get('patient_summary'):
+                                        st.markdown("### Your Report Explained")
+                                        st.markdown(f'<div class="alert-success">{r_summ["patient_summary"]}</div>', unsafe_allow_html=True)
+                                except Exception:
+                                    pass
+                            except Exception:
                                 st.warning("Processing will be available once AI models are loaded.")
-                else:
-                    st.error(f"Upload failed: {r.json().get('detail', 'Unknown error')}")
+                except Exception as e:
+                    st.error("Upload failed")
 
     st.markdown("")
 
     # Document list
-    st.markdown('<p class="section-header">📁 Your Documents</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="section-header">{icon_label("folder", "Your Documents", color="#94A3B8")}</p>', unsafe_allow_html=True)
     try:
-        r = requests.get(f"{api_base}/api/patient/documents", headers=api_headers_fn())
-        docs = r.json() if r.status_code == 200 else []
+        docs = api_client.get_documents()
     except Exception:
         docs = []
 
@@ -80,19 +77,9 @@ def show_upload_page(api_base, api_headers_fn):
         return
 
     for doc in docs:
-        icon = {
-            "lab_report": "🔬", "prescription": "💊", "discharge_summary": "🏥",
-            "imaging": "📸", "pathology": "🧫", "consultation_note": "📝",
-            "vaccination": "💉", "insurance": "📋",
-        }.get(doc["doc_type"], "📄")
+        doc_icon_html = doc_type_icon_circle(doc["doc_type"], size=42)
 
-        icon_bg = {
-            "lab_report": "#DBEAFE", "prescription": "#DCFCE7", "discharge_summary": "#FFF7ED",
-            "imaging": "#F3E8FF", "pathology": "#FCE7F3", "consultation_note": "#DBEAFE",
-            "vaccination": "#DCFCE7", "insurance": "#F1F5F9",
-        }.get(doc["doc_type"], "#F1F5F9")
-
-        status_badge = '<span class="badge-low">🧠 AI Ready</span>' if doc["is_processed"] else '<span class="badge-medium">⏳ Not processed</span>'
+        status_badge = f'<span class="badge-low">{icon("circle-check", size=14, color="#16A34A")} AI Ready</span>' if doc["is_processed"] else f'<span class="badge-medium">{icon("clock", size=14, color="#EA580C")} Not processed</span>'
         size_kb = doc["file_size"] / 1024
         uploaded = doc.get("uploaded_at", "")
         if uploaded:
@@ -102,7 +89,7 @@ def show_upload_page(api_base, api_headers_fn):
         st.markdown(f"""
         <div class="doc-list-card">
             <div style="display:flex; align-items:center; gap:14px;">
-                <div class="doc-icon-circle" style="background:{icon_bg};">{icon}</div>
+                {doc_icon_html}
                 <div style="flex:1; min-width:0;">
                     <div style="font-weight:700; color:#0F172A; font-size:0.9rem;">{doc['original_filename']}</div>
                     <div style="font-size:0.8rem; color:#64748B;">{doc['doc_type'].replace('_', ' ').title()} · {size_kb:.1f} KB</div>
@@ -123,37 +110,28 @@ def show_upload_page(api_base, api_headers_fn):
 
             with col2:
                 if not doc["is_processed"]:
-                    if st.button("🤖 Process", key=f"proc_{doc['id']}", use_container_width=True):
+                    if st.button("Process", key=f"proc_{doc['id']}", use_container_width=True):
                         with st.spinner("Processing..."):
-                            r = requests.post(
-                                f"{api_base}/api/patient/documents/{doc['id']}/process",
-                                headers=api_headers_fn(),
-                            )
-                            if r.status_code == 200:
+                            try:
+                                api_client.process_document(doc['id'])
                                 st.success("Processed!")
                                 st.rerun()
-                            else:
+                            except Exception:
                                 st.warning("Processing requires AI models to be loaded.")
                 else:
-                    if st.button("🔄 Regenerate Summary", key=f"regen_{doc['id']}", use_container_width=True):
+                    if st.button("Regenerate Summary", key=f"regen_{doc['id']}", use_container_width=True):
                         with st.spinner("Analyzing your report..."):
-                            r_regen = requests.post(
-                                f"{api_base}/api/patient/documents/{doc['id']}/regenerate-summary",
-                                headers=api_headers_fn()
-                            )
-                            if r_regen.status_code == 200:
+                            try:
+                                api_client.regenerate_document_summary(doc['id'])
                                 st.success("Summary Regenerated!")
                                 st.rerun()
-                            else:
+                            except Exception:
                                 st.error("Failed to regenerate.")
 
-                if st.button("🗑️ Delete", key=f"del_{doc['id']}", use_container_width=True):
-                    r = requests.delete(
-                        f"{api_base}/api/patient/documents/{doc['id']}",
-                        headers=api_headers_fn(),
-                    )
-                    if r.status_code == 204:
+                if st.button("Delete", key=f"del_{doc['id']}", use_container_width=True):
+                    try:
+                        api_client.delete_document(doc['id'])
                         st.success("Deleted!")
                         st.rerun()
-                    else:
+                    except Exception:
                         st.error("Failed to delete")

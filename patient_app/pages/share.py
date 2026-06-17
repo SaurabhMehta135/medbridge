@@ -1,20 +1,23 @@
 """Patient App — Record Sharing Page"""
 
 import streamlit as st
-import requests
 from datetime import datetime
+from core.api_client import api_client
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from shared.icons import icon, icon_label
 
 
 def show_share_page(api_base, api_headers_fn):
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header">
-        <h1>🔗 Share Your Records</h1>
+        <h1>{icon('share-2', size=28, color='#0891B2')} Share Your Records</h1>
         <p>Generate time-limited access codes for your doctors</p>
     </div>
     """, unsafe_allow_html=True)
 
     # Create new access code
-    st.markdown('<p class="section-header">🆕 Generate Access Code</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="section-header">{icon_label("plus-circle", "Generate Access Code", color="#94A3B8")}</p>', unsafe_allow_html=True)
 
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -29,22 +32,19 @@ def show_share_page(api_base, api_headers_fn):
         else:
             days = hours // 24
             duration_text = f"{days} day{'s' if days > 1 else ''} ({hours} hours)"
-        st.caption(f"⏱️ Duration: {duration_text}")
+        st.markdown(f'<span style="font-size:0.85rem; color:#64748B;">{icon("timer", size=14, color="#64748B")} Duration: {duration_text}</span>', unsafe_allow_html=True)
 
     with col2:
         st.write("")
         st.write("")
-        if st.button("🔑 Generate Code", use_container_width=True, type="primary"):
-            r = requests.post(
-                f"{api_base}/api/patient/access-codes",
-                json={"expires_in_hours": hours},
-                headers=api_headers_fn(),
-            )
-            if r.status_code == 201:
-                code = r.json()["code"]
-                st.session_state.last_code = code
+        if st.button("Generate Code", use_container_width=True, type="primary"):
+            try:
+                # The API expects days, let's round hours up to days
+                days = max(1, hours // 24)
+                data = api_client.generate_access_code(days)
+                st.session_state.last_code = data["code"]
                 st.rerun()
-            else:
+            except Exception:
                 st.error("Failed to generate code")
 
     # Show last generated code
@@ -58,9 +58,9 @@ def show_share_page(api_base, api_headers_fn):
         """, unsafe_allow_html=True)
 
     # How to share instructions
-    st.markdown("""
+    st.markdown(f"""
     <div class="info-box">
-        <strong>ℹ️ How to share</strong><br>
+        <strong>{icon('info', size=16, color='#0E7490')} How to share</strong><br>
         Generate a code and share it with your doctor.
         They will enter this code in their portal to access your records.
         Codes expire automatically after the selected duration.
@@ -70,11 +70,10 @@ def show_share_page(api_base, api_headers_fn):
     st.markdown("")
 
     # Active codes list
-    st.markdown('<p class="section-header">📋 Your Access Codes</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="section-header">{icon_label("clipboard", "Your Access Codes", color="#94A3B8")}</p>', unsafe_allow_html=True)
 
     try:
-        r = requests.get(f"{api_base}/api/patient/access-codes", headers=api_headers_fn())
-        codes = r.json() if r.status_code == 200 else []
+        codes = api_client.get_access_codes()
     except Exception:
         codes = []
 
@@ -123,11 +122,10 @@ def show_share_page(api_base, api_headers_fn):
         """, unsafe_allow_html=True)
 
         if not is_revoked and not is_expired:
-            if st.button("❌ Revoke Access", key=f"revoke_{code_data['id']}"):
-                r = requests.delete(
-                    f"{api_base}/api/patient/access-codes/{code_data['id']}",
-                    headers=api_headers_fn(),
-                )
-                if r.status_code == 204:
+            if st.button("Revoke Access", key=f"revoke_{code_data['id']}"):
+                try:
+                    api_client.revoke_access_code(code_data['id'])
                     st.success("Access revoked!")
                     st.rerun()
+                except Exception:
+                    st.error("Failed to revoke access")

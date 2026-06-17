@@ -4,12 +4,16 @@ import streamlit as st
 import streamlit.components.v1 as components
 from datetime import datetime
 import io
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from shared.icons import icon
 
 
 def show_emergency_card():
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #991B1B 0%, #DC2626 60%, #EF4444 100%); box-shadow: 0 4px 16px rgba(220,38,38,0.15);">
-        <h1>🚨 Emergency Card</h1>
+        <h1>{icon('shield-alert', size=28, color='white')} Emergency Card</h1>
         <p>Quick-access card with your critical medical information</p>
     </div>
     """, unsafe_allow_html=True)
@@ -46,7 +50,7 @@ def show_emergency_card():
     st.markdown(f"""
     <div class="emergency-card">
         <div class="emergency-card-header">
-            <h3>🏥 MEDBRIDGE — EMERGENCY HEALTH CARD</h3>
+            <h3>{icon('hospital', size=20, color='white')} MEDBRIDGE — EMERGENCY HEALTH CARD</h3>
         </div>
         <div class="emergency-card-body">
             <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
@@ -61,15 +65,15 @@ def show_emergency_card():
                 <div style="font-size:2.5rem; font-weight:900; color:#DC2626;">{blood_type}</div>
             </div>
             <div class="emergency-card-field">
-                <div class="label">⚠️ Allergies</div>
+                <div class="label">{icon('triangle-alert', size=14, color='#DC2626')} Allergies</div>
                 <div class="value" style="color:#DC2626;">{allergies}</div>
             </div>
             <div class="emergency-card-field">
-                <div class="label">💊 Current Medications</div>
+                <div class="label">{icon('pill', size=14, color='#0891B2')} Current Medications</div>
                 <div class="value">{medications}</div>
             </div>
             <div class="emergency-card-field" style="border-bottom:none;">
-                <div class="label">📞 Emergency Contact</div>
+                <div class="label">{icon('phone', size=14, color='#0891B2')} Emergency Contact</div>
                 <div class="value">{ec_name} — {ec_phone}</div>
             </div>
         </div>
@@ -89,14 +93,19 @@ def show_emergency_card():
     # Print button via JS
     _, col_center, _ = st.columns([1, 2, 1])
     with col_center:
-        components.html("""
-        <button onclick="window.parent.print()"
-            style="width:100%; padding:14px 28px; border-radius:12px; border:2px solid #DC2626;
-            background:white; color:#DC2626; font-weight:700; font-size:1rem; cursor:pointer;
-            font-family:'Inter',sans-serif; transition: all 0.2s;"
-            onmouseover="this.style.background='#FEF2F2'"
-            onmouseout="this.style.background='white'">
-            🖨️ Print Emergency Card
+        components.html(f"""
+        <style>
+            .print-btn {{
+                width: 100%; padding: 14px 28px; border-radius: 12px;
+                border: 2px solid #DC2626; background: white; color: #DC2626;
+                font-weight: 700; font-size: 1rem; cursor: pointer;
+                font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s ease;
+                display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            }}
+            .print-btn:hover {{ background: #FEF2F2; }}
+        </style>
+        <button onclick="window.parent.print()" class="print-btn">
+            {icon('printer', size=18, color='#DC2626')} Print Emergency Card
         </button>
         """, height=60)
 
