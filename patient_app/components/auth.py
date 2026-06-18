@@ -60,17 +60,16 @@ def show_auth_page():
         section[data-testid="stSidebar"] { display: none !important; }
     </style>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="auth-container">', unsafe_allow_html=True)
-    st.markdown('<div class="auth-panel">', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h1 style="font-size: 2.5rem !important; color: #0F172A;">Patient Portal</h1>
+                <p class="subtitle">Your health story, securely illuminated</p>
+            </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown("""
-        <div style="text-align: center; margin-bottom: 24px;">
-            <h1 style="font-size: 2.5rem !important; color: #0F172A;">Patient Portal</h1>
-            <p class="subtitle">Your health story, securely illuminated</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    tab_login, tab_register = st.tabs(["  Sign In  ", "  Create Account  "])
+        tab_login, tab_register = st.tabs(["  Sign In  ", "  Create Account  "])
 
         with tab_login:
             login_step = st.session_state.login_step
@@ -179,8 +178,6 @@ def show_auth_page():
                             st.success(msg)
                         else:
                             st.error(msg)
-
-        st.markdown('</div></div>', unsafe_allow_html=True)
         st.markdown(f"""
         <p style="text-align:center; color:#94A3B8; font-size:0.75rem; margin-top:32px;">
             {icon("lock", size=14, color="#94A3B8")} Your data is encrypted and HIPAA-compliant.<br>MedBridge © 2026
